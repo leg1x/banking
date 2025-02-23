@@ -25,9 +25,10 @@ import { Loader2 } from 'lucide-react'
 import SignUp from '@/app/(auth)/sign-up/page'
 import { useRouter } from 'next/navigation'
 import { getLoggedInUser, signIn, signUp } from '@/lib/actions/user.actions'
+import PlaidLink from './PlaidLink'
 
 
-const AuthForm = ({type}: {type:string}) => {
+const AuthForm = ({type}: {type: string}) => {
 
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -41,7 +42,7 @@ const AuthForm = ({type}: {type:string}) => {
           defaultValues: {
             email: "",
             password: '',
-          },
+          }, 
         })
        
         // 2. Define a submit handler.
@@ -51,10 +52,24 @@ const AuthForm = ({type}: {type:string}) => {
           setIsLoading(true);
 
           try {
-            //Sign up with Appwrite andd crreate plaid token
+            //Sign up with Appwrite andd create plaid token
+            
             if(type === 'sign-up')
             {
-                const newUser = await signUp(data);
+                const UserData = {
+                    firstName: data.firstName!,
+                    lastName: data.lastName!,
+                    address1: data.address1!,
+                    city: data.city!,
+                    state: data.state!,
+                    postalCode: data.postalCode!,    
+                    dateOfBirth: data.dateOfBirth!,
+                    ssn: data.ssn!,
+                    email: data.email,
+                    password: data.password               
+                }
+
+                const newUser = await signUp(UserData);
 
                 setUser(newUser);
             }
@@ -111,7 +126,7 @@ const AuthForm = ({type}: {type:string}) => {
             </header>
             {user ? (
                 <div className="flex flex-col gap-4">
-                        {/* Plaid Link */}
+                        <PlaidLink user = {user} variant="primary"/>
                 </div>
             ): (
                 <>
